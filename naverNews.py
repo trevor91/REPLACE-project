@@ -99,7 +99,6 @@ if __name__ == '__main__':
 
 		# get single new url & next page url. => return (next page)
 		url = getResource(url)
-
 		if(url == None):
 			break
 
