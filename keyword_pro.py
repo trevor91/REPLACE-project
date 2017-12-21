@@ -1,15 +1,43 @@
 from Keyword import keyword
 
-if __name__ == '__main__':
-	query	= '비트코인'
-	start	= '2017.04.04'
-	end 	= '2017.04.05'
-	
-	key1 = keyword(query, start, end)
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-	key1.newsCrawling()
+if __name__ == '__main__':
+	
+	query	= ''
+	start	= '2017.03.29'
+	end 	= '2017.07.31'
+
+	key1 = keyword(query, start, end)
+	key1.sqlConnect('','','')
+	key1.newsCrawling(newsList = True, newsCont = False)
+	key1.sqlClose()
 	print('-'*50)
 	
-	print(key1.getNews())
+	# temp = key1.getNews()
+	# print(len(temp))
+	# for idx, s in enumerate(temp):
+	# 	print(s)
+	# 	if idx == 5:
+	# 		break
+	# print('-'*50)
+	
 
-	# key1.searchKeyword('거래소', '코인', '비트코인', '이더리움', '리플')
+	# testDic = key1.searchKeyword(testKeyword)
+	# # print(testDic)
+	# vect = DictVectorizer(sparse=False)
+	# tfidf_matrix = vect.fit_transform(testDic)
+	
+	# print('-'*50)
+	# print(tfidf_matrix)
+	# print('-'*50)
+	# print(tfidf_matrix[0:1])
+	# print('='*50)
+
+	# for i in range(len(tfidf_matrix)):
+	# 	print('*'*50)
+	# 	rst = cosine_similarity(tfidf_matrix[i:(i+1)], tfidf_matrix)
+	# 	print(rst)
+	# # next refer.
+	# # https://datascienceschool.net/view-notebook/3e7aadbf88ed4f0d87a76f9ddc925d69/
