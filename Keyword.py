@@ -31,8 +31,8 @@ class keyword:
 	############################## crawling function ##############################
 	def getUrl(self):
 		mainURL = "https://search.naver.com/search.naver?where=news&ie=utf8&sm=tab_opt&sort=0&photo=0&field=0&reporter_article=&pd=3&docid=&nso=so%3Ar%2Cp%3Afrom{start2}to{end2}%2Ca%3Aall&mynews=0&mson=0&refresh_start=0&related=0&query={query}&ds={start}&de={end}"
-		if(self.start==self.end):
-			self.end = self.end[0:-1] + str((int(self.end[-1]) + 1))
+		# if(self.start==self.end):
+		# 	self.end = self.end[0:-1] + str((int(self.end[-1]) + 1))
 
 		url = mainURL.format(\
 			query = quote(self.myKeyword)\
