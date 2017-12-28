@@ -1,17 +1,14 @@
 from Keyword import keyword
-
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import sys
 
-if __name__ == '__main__':
-	
-	### 한 시점에 대해서 20개 키워드를 각각 start, end를 통해서 기사를 수집하고.
-	### 그 기사들을 기준으로. A라는 키워드 기사에 나머지 19개의 키워드 모두에대한 cosine similarity를 구함.
 
-	# key1 = keyword(query, start, end)
+## get news url list
+def getNewsURLListUseDB(host, iden, pw, query):
 	key1 = keyword()
-	key1.sqlConnect('','root','')
-	period = key1.selectKeywordPeriod("미세먼지")
+	key1.sqlConnect(host, iden, pw)
+	period = key1.selectKeywordPeriod(query)
 	for s in period:
 		print(s)
 		key1.setKeyword(s["keyword"])
@@ -19,15 +16,58 @@ if __name__ == '__main__':
 		key1.setEnd(s["end"])
 
 		key1.newsCrawling(newsList = True, newsCont = False)
-		# key1.setDBToNewsUrl()
-		# key1.newsCrawling(newsList = False, newsCont = True)
-	
-	# key1.newsCrawling(newsList = True, newsCont = False)
+	key1.sqlClose()
 
-	# key1.selectNewsList()
+
+def getNewsUrlList(host, iden, pw, query, start, end):
+	key1 = keyword(query, start, end)
+	key1.sqlConnect(host, iden, pw)
 	
-	# key1.setDBToNewsUrl()
-	# key1.newsCrawling(newsList = False, newsCont = True)
+	key1.newsCrawling(newsList = True, newsCont = False)
 
 	key1.sqlClose()
-	print('-'*50)
+
+
+## news crawling
+def newsCrawling(host, iden, pw, query, start, end):
+	key1 = keyword(query, start, end)
+	key1.sqlConnect(host, iden, pw)
+	key1.setDBToNewsUrl() #set news url
+	key1.newsCrawling(newsList = False, newsCont = True)
+	key1.sqlClose()
+
+
+if __name__ == '__main__':
+	host 	= sys.argv[1]
+	iden 	= sys.argv[2]
+	pw 		= sys.argv[3]
+
+	query	= sys.argv[4]
+	start	= sys.argv[5]
+	end 	= sys.argv[6]
+	
+	getNewsURLListUseDB(host, iden, pw, query)
+	# getNewsUrlList(host, iden, pw, query, start, end)
+		
+	# newsCrawling(host, iden, pw, query, start, end)
+	
+	
+def temp():
+	pass
+	# testDic = key1.searchKeyword(testKeyword)
+	# # print(testDic)
+	# vect = DictVectorizer(sparse=False)
+	# tfidf_matrix = vect.fit_transform(testDic)
+	
+	# print('-'*50)
+	# print(tfidf_matrix)
+	# print('-'*50)
+	# print(tfidf_matrix[0:1])
+	# print('='*50)
+
+	# for i in range(len(tfidf_matrix)):
+	# 	print('*'*50)
+	# 	rst = cosine_similarity(tfidf_matrix[i:(i+1)], tfidf_matrix)
+	# 	print(rst)
+	# # next refer.
+	# # https://datascienceschool.net/view-notebook/3e7aadbf88ed4f0d87a76f9ddc925d69/

@@ -31,13 +31,16 @@ class keyword:
 		self.myKeyword = keyword
 
 	def setStart(self, start):
-		self.start = start
+		self.start = re.sub("-",".",start)
 
 	def setEnd(self, end):
-		self.end = end
+		self.end = re.sub("-",".",end)
+
+
 	############################## crawling function ##############################
 	def getUrl(self):
 		mainURL = "https://search.naver.com/search.naver?where=news&ie=utf8&sm=tab_opt&sort=0&photo=0&field=0&reporter_article=&pd=3&docid=&nso=so%3Ar%2Cp%3Afrom{start2}to{end2}%2Ca%3Aall&mynews=0&mson=0&refresh_start=0&related=0&query={query}&ds={start}&de={end}"
+
 		# if(self.start==self.end):
 		# 	self.end = self.end[0:-1] + str((int(self.end[-1]) + 1))
 
@@ -194,6 +197,8 @@ class keyword:
 
 	def setDBToNewsUrl(self):
 		self.newsUrl = self.selectNewsList()
+
+
 	############################## search function ##############################
 	def removeWhiteSpace(self, string):
 		pattern = re.compile(r'\s+')
@@ -269,7 +274,7 @@ class keyword:
 	def selectNewsList(self):
 		try:
 			with self.conn.cursor() as cursor:
-				sql = 'SELECT A.url FROM tobigs.news_list as A LEFT JOIN tobigs.news as B ON A.url = B.url WHERE B.url is null AND A.query = %s AND A.start = %s AND A.end = %s;'
+				sql = 'SELECT distinct A.url FROM tobigs.news_list as A LEFT JOIN tobigs.news as B ON A.url = B.url WHERE B.url is null AND A.query = %s AND A.start = %s AND A.end = %s;'
 				cursor.execute(sql, (self.myKeyword, self.start, self.end))
 			rows = [row[0] for row in cursor.fetchall()]
 			return(rows)
@@ -302,7 +307,7 @@ class keyword:
 	def insertNewsList(self, url):
 		try:
 			with self.conn.cursor() as cursor:
-				sql = 'INSERT INTO tobigs.news_list (query, start, end, url) VALUES (%s, %s, %s, %s)'
+				sql = 'INSERT IGNORE INTO tobigs.news_list (query, start, end, url) VALUES (%s, %s, %s, %s)'
 				cursor.execute(sql, (self.myKeyword, self.start, self.end, url))
 			self.conn.commit()
 		except Exception as e:
@@ -312,7 +317,7 @@ class keyword:
 	def insertNews(self, news):
 		try:
 			with self.conn.cursor() as cursor:
-				sql = 'INSERT INTO tobigs.news (url, title, content, date, company, query, start, end) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
+				sql = 'INSERT IGNORE INTO tobigs.news (url, title, content, date, company, query, start, end) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
 				cursor.execute(sql, (news['url'], news['title'], news['cont'].strip(), news['date'], news['company'], self.myKeyword, self.start, self.end))
 			self.conn.commit()
 		except Exception as e:
