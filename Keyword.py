@@ -6,7 +6,7 @@ from urllib.parse import quote
 import pymysql.cursors
 
 class keyword:
-	def __init__(self, myKeyword, startTime, endTime):
+	def __init__(self, myKeyword = None, startTime = None, endTime = None):
 		self.myKeyword = myKeyword
 		self.start = startTime
 		self.end = endTime
@@ -27,7 +27,14 @@ class keyword:
 	def getNews(self):
 		return(self.news)
 
+	def setKeyword(self, keyword):
+		self.myKeyword = keyword
 
+	def setStart(self, start):
+		self.start = start
+
+	def setEnd(self, end):
+		self.end = end
 	############################## crawling function ##############################
 	def getUrl(self):
 		mainURL = "https://search.naver.com/search.naver?where=news&ie=utf8&sm=tab_opt&sort=0&photo=0&field=0&reporter_article=&pd=3&docid=&nso=so%3Ar%2Cp%3Afrom{start2}to{end2}%2Ca%3Aall&mynews=0&mson=0&refresh_start=0&related=0&query={query}&ds={start}&de={end}"
@@ -106,10 +113,12 @@ class keyword:
 		rst['company'] = soup.select('#main_content > div.article_header > div.press_logo > a > img')[0].get('title')
 		# get contents
 		rst['cont'] = soup.select('#articleBodyContents')[0].text
-		temp = "\n\n\n\n\n// flash 오류를 우회하기 위한 함수 추가\nfunction _flash_removeCallback() {}"
+		temp = "// flash 오류를 우회하기 위한 함수 추가"
+		temp2 = "function _flash_removeCallback\(\) \{\}"
 		if temp in rst['cont']:
 			rst['cont'] = re.sub(temp, '', rst['cont'])
-
+			rst['cont'] = re.sub(temp2, '', rst['cont'])
+			rst['cont'] = re.sub('\n\n', '\n', rst['cont'])
 		return(rst)
 
 
@@ -183,7 +192,8 @@ class keyword:
 				print("news:\t" + news)
 				self.news.append(self.getNewsInfo(news))
 
-
+	def setDBToNewsUrl(self):
+		self.newsUrl = self.selectNewsList()
 	############################## search function ##############################
 	def removeWhiteSpace(self, string):
 		pattern = re.compile(r'\s+')
@@ -256,6 +266,39 @@ class keyword:
 		self.conn = pymysql.connect(host=host,user=user,password=pw,charset='utf8mb4')
 
 
+	def selectNewsList(self):
+		try:
+			with self.conn.cursor() as cursor:
+				sql = 'SELECT A.url FROM tobigs.news_list as A LEFT JOIN tobigs.news as B ON A.url = B.url WHERE B.url is null AND A.query = %s AND A.start = %s AND A.end = %s;'
+				cursor.execute(sql, (self.myKeyword, self.start, self.end))
+			rows = [row[0] for row in cursor.fetchall()]
+			return(rows)
+		except Exception as e:
+			print("DB SELECT ERROR" + e)
+
+
+	def selectKeywordPeriod(self, query):
+		try:
+			with self.conn.cursor() as cursor:
+				sql = 'SELECT keyword, start, end FROM tobigs.keyword_period WHERE keyword = %s;'
+				cursor.execute(sql, (query))
+			columns = cursor.description
+			rows = [{columns[index][0]:column for index, column in enumerate(value)} for value in cursor.fetchall()]
+			return(rows)
+		except Exception as e:
+			print("DB SELECT ERROR" + e)
+
+	def selectNewsInfo(self):
+		try:
+			with self.conn.cursor() as cursor:
+				sql = 'SELECT url, title, content, date, company FROM tobigs.news WHERE query = %s AND start = %s AND end = %s AND id > 1627'
+				cursor.execute(sql, (self.myKeyword, self.start, self.end))
+			columns = cursor.description
+			rows = [{columns[index][0]:column for index, column in enumerate(value)} for value in cursor.fetchall()]
+			return(rows)
+		except Exception as e:
+			print("DB SELECT ERROR" + e)
+
 	def insertNewsList(self, url):
 		try:
 			with self.conn.cursor() as cursor:
@@ -269,8 +312,8 @@ class keyword:
 	def insertNews(self, news):
 		try:
 			with self.conn.cursor() as cursor:
-				sql = 'INSERT INTO tobigs.news (url, title, content, date, company) VALUES (%s, %s, %s, %s, %s)'
-				cursor.execute(sql, (news['url'], news['title'], news['cont'], news['date'], news['company']))
+				sql = 'INSERT INTO tobigs.news (url, title, content, date, company, query, start, end) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
+				cursor.execute(sql, (news['url'], news['title'], news['cont'].strip(), news['date'], news['company'], self.myKeyword, self.start, self.end))
 			self.conn.commit()
 		except Exception as e:
 			print("DB INSERT ERROR" + e)
@@ -281,3 +324,5 @@ class keyword:
 			self.conn.close()
 		else:
 			print("DB is not connected.") #<class 'pymysql.connections.Connection'>
+
+
