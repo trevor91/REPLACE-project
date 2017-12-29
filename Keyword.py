@@ -199,6 +199,8 @@ class keyword:
 	def setDBToNewsUrl(self):
 		self.newsUrl = self.selectNewsList()
 
+	def setDBToNewsUrlUseQuery(self):
+		self.newsUrl = self.selectNewsListUseqUery()
 
 	############################## search function ##############################
 	def removeWhiteSpace(self, string):
@@ -282,6 +284,15 @@ class keyword:
 		except Exception as e:
 			print("DB SELECT ERROR" + e)
 
+	def selectNewsListUseqUery(self):
+		try:
+			with self.conn.cursor() as cursor:
+				sql = 'SELECT distinct A.url FROM tobigs.news_list as A LEFT JOIN tobigs.news as B ON A.url = B.url WHERE B.url is null AND A.query = %s;'
+				cursor.execute(sql, (self.myKeyword))
+			rows = [row[0] for row in cursor.fetchall()]
+			return(rows)
+		except Exception as e:
+			print("DB SELECT ERROR" + e)
 
 	def selectKeywordPeriod(self, query):
 		try:
