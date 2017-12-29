@@ -31,10 +31,10 @@ class keyword:
 		self.myKeyword = keyword
 
 	def setStart(self, start):
-		self.start = re.sub("-",".",start)
+		self.start = start
 
 	def setEnd(self, end):
-		self.end = re.sub("-",".",end)
+		self.end = end
 
 
 	############################## crawling function ##############################
@@ -48,8 +48,8 @@ class keyword:
 			query = quote(self.myKeyword)\
 			,start = self.start\
 			,end = self.end\
-			,start2 = re.sub('.','',self.start)\
-			,end2 = re.sub('.','',self.end))
+			,start2 = re.sub('\.','',self.start)\
+			,end2 = re.sub('\.','',self.end))
 		return(url)
 
 	def getNextPage(self, soup):
@@ -178,6 +178,7 @@ class keyword:
 	def newsCrawling(self, newsList = True, newsCont = True):
 		# step1. 해당조건의 뉴스기사 검색 URL 생성
 		url = self.getUrl()
+		print(url)
 		if newsList:
 			# step2. 뉴스 기사 검색을 통해서 기사 URL list 생성
 			while 1:
