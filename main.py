@@ -46,8 +46,8 @@ if __name__ == '__main__':
 	start	= sys.argv[5]
 	end 	= sys.argv[6]
 	
-	getNewsURLListUseDB(host, iden, pw, query)
-	# getNewsUrlList(host, iden, pw, query, start, end)
+	# getNewsURLListUseDB(host, iden, pw, query)
+	getNewsUrlList(host, iden, pw, query, start, end)
 		
 	# newsCrawling(host, iden, pw, query, start, end)
 	
