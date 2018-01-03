@@ -60,8 +60,8 @@ if __name__ == '__main__':
 	# getNewsURLListUseDB(host, iden, pw, query)
 	# getNewsUrlList(host, iden, pw, query, start, end)
 	
-	# newsCrawling(host, iden, pw, query, start, end)
-	newsCrawlingUseQuery(host, iden, pw, query, start, end)
+	newsCrawling(host, iden, pw, query, start, end)
+	# newsCrawlingUseQuery(host, iden, pw, query, start, end)
 	
 def temp():
 	pass
