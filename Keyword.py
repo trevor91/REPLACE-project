@@ -1,3 +1,4 @@
+#-*- coding:utf-8 -*-
 import requests, re
 from bs4 import BeautifulSoup
 import datetime
@@ -148,6 +149,33 @@ class keyword:
 		return(rst)
 
 
+	def form3(self, url, soup): # http://sports.news.naver.com # redirect
+		rst = dict()
+		rst['url'] = url
+		# get title
+		rst['title'] = soup.select('#content > div > div.content > div > div.news_headline > h4')[0].text
+		# get date
+		rst['date'] = soup.select('#content > div > div.content > div > div.news_headline > div > span')[0].text
+		if '기사입력' in rst['date']:
+			rst['date'] = re.sub('기사입력','',rst['date'])
+		if '오전' in rst['date']:
+			rst['date'] = re.sub('오전','',rst['date'])
+		if '오후' in rst['date']:
+			temp = rst['date'].split('오후')
+			temp2 = temp[1].split(':')
+			t = int(temp2[0]) + 12
+			if t > 23:
+				t = 0
+			rst['date'] = "%s %s:%s" % (temp[0], str(t), temp2[1])
+		# get company name
+		rst['company'] = soup.select('#pressLogo > a > img')[0].get('alt')
+		# get contents
+		rst['cont'] = soup.select('#newsEndContents')[0].text.decode('utf-8', 'replace')
+		print(rst)
+		print('-'*50)
+		return(rst)
+
+
 	def getNewsInfo(self, url):
 		response = requests.get(url, allow_redirects=True)
 		# print(response.history) # redirect check.
@@ -163,6 +191,10 @@ class keyword:
 			# http://entertain.naver.com
 			elif 'http://entertain.naver.com' in response.url:
 				news = self.form2(url, soup)
+
+			# http://sports.news.naver.com
+			elif 'http://sports.news.naver.com' in response.url:
+				news = self.form3(url, soup)			
 
 			if self.conn != 0:
 				self.insertNews(news)
