@@ -6,6 +6,7 @@ import time
 from urllib.parse import quote
 import pymysql.cursors
 
+
 class keyword:
 	def __init__(self, myKeyword = None, startTime = None, endTime = None):
 		self.myKeyword = myKeyword
@@ -97,8 +98,6 @@ class keyword:
 		# ERROR
 		elif response.status_code == 403:
 			print('getNextPage()\terr\t' + str(response.status_code) + '\n' + url)
-			time.sleep(10)
-			self.getResource(url)
 			return(None)
 		else:
 			print('getNextPage()\terr\t' + str(response.status_code) + '\n' + url)
