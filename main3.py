@@ -3,7 +3,7 @@ import datetime, time
 from Keyword import keyword
 from collections import Counter
 import re
-
+import sys
 
 def getKeywordNewsIgnoreDate(host, id, pw, query):
 	obj = keyword(keyword = query)
@@ -15,10 +15,10 @@ def getKeywordNewsIgnoreDate(host, id, pw, query):
 
 if __name__ == '__main__':
 
-	host 	= "13.124.46.181"
-	id 		= "root"
-	pw 		= "tobigs"
-	keywords= ["정유라"]
+	host 	= sys.argv[1]
+	id 		= sys.argv[2]
+	pw 		= sys.argv[3]
+	keywords= [""] 
 
 
 	data = []
