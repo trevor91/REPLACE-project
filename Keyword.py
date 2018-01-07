@@ -6,10 +6,9 @@ import time
 from urllib.parse import quote
 import pymysql.cursors
 
-
 class keyword:
-	def __init__(self, myKeyword = None, startTime = None, endTime = None):
-		self.myKeyword = myKeyword
+	def __init__(self, keyword = None, startTime = None, endTime = None):
+		self.myKeyword = keyword
 		self.start = startTime
 		self.end = endTime
 
@@ -262,18 +261,9 @@ class keyword:
 		for string in strings:
 			keywordList.append(self.removeWhiteSpace(str(string)))
 
-
 		# keywordList을 긴거 순으로 정렬
 		keywordList.sort(key = len, reverse = True)
 
-		# 검색
-
-		# for idx, title in enumerate(newsTitle):
-		# 	temp = dict()
-		# 	for string in keywordList:
-		# 		temp[string] = title.count(string)
-		# 		newsTitle[idx] = re.sub(string, '', title)
-		# 	rst.append(temp)
 
 		for idx, cont in enumerate(newsCont):
 			temp = dict()
@@ -284,18 +274,6 @@ class keyword:
 				newsCont[idx] = re.sub(string, '', cont)
 			print('-'*30)
 			rst.append(temp)
-
-
-		# for string in keywordList:
-		# 	for idx, title in enumerate(newsTitle):
-		# 		temp[string] = title.count(string)
-		# 		# print('%s title count: %d' % (string, title.count(string)))
-		# 		newsTitle[idx] = re.sub(string, '', title)
-		# 	for idx, content in enumerate(newsCont):
-		# 		temp[string] = content.count(string) + rst[string]
-		# 		# print('%s content count: %d' % (string, content.count(string)))
-		# 		newsCont[idx] = re.sub(string, '', content)
-
 		return(rst)
 
 
@@ -339,13 +317,25 @@ class keyword:
 	def selectNewsInfo(self):
 		try:
 			with self.conn.cursor() as cursor:
-				sql = 'SELECT url, title, content, date, company FROM tobigs.news WHERE query = %s AND start = %s AND end = %s AND id > 1627'
+				sql = 'SELECT url, title, content, date, company FROM tobigs.news WHERE query = %s AND start = %s AND end = %s'
 				cursor.execute(sql, (self.myKeyword, self.start, self.end))
 			columns = cursor.description
 			rows = [{columns[index][0]:column for index, column in enumerate(value)} for value in cursor.fetchall()]
 			return(rows)
 		except Exception as e:
 			print("DB SELECT ERROR" + e)
+
+
+	def selectKeywordNewsIgnoreDate(self):
+		try:
+			with self.conn.cursor() as cursor:
+				sql = 'SELECT title, date(date) as date from tobigs.news where query = %s'
+				cursor.execute(sql, (self.myKeyword))
+			columns = cursor.description
+			rows = [{columns[index][0]:column for index, column in enumerate(value)} for value in cursor.fetchall()]
+			return(rows)
+		except Exception as e:
+			prunt("DB SELECT ERROR" + e)
 
 	def insertNewsList(self, url):
 		try:

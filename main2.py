@@ -1,9 +1,6 @@
 #-*- coding:utf-8 -*-
 from Keyword import keyword
-from sklearn.feature_extraction import DictVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 import sys
-
 
 ## get news url list
 
@@ -62,23 +59,3 @@ if __name__ == '__main__':
 	
 	newsCrawling(host, iden, pw, query, start, end)
 	# newsCrawlingUseQuery(host, iden, pw, query, start, end)
-	
-def temp():
-	pass
-	# testDic = key1.searchKeyword(testKeyword)
-	# # print(testDic)
-	# vect = DictVectorizer(sparse=False)
-	# tfidf_matrix = vect.fit_transform(testDic)
-	
-	# print('-'*50)
-	# print(tfidf_matrix)
-	# print('-'*50)
-	# print(tfidf_matrix[0:1])
-	# print('='*50)
-
-	# for i in range(len(tfidf_matrix)):
-	# 	print('*'*50)
-	# 	rst = cosine_similarity(tfidf_matrix[i:(i+1)], tfidf_matrix)
-	# 	print(rst)
-	# # next refer.
-	# # https://datascienceschool.net/view-notebook/3e7aadbf88ed4f0d87a76f9ddc925d69/
