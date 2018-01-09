@@ -5,9 +5,9 @@ import pickle
 def main():
 	datapath = './Data/'
 	resultspath = './results/'
-	documents_path = datapath + 'titles.txt'
-	timestamps_path = datapath + 'times.txt'
-	stopwords_path = datapath + 'stopwords.txt'
+	documents_path = datapath + 'titles'
+	timestamps_path = datapath + 'times'
+	stopwords_path = datapath + 'stopwords'
 	tot_topic_vectors_path = resultspath + 'tot_topic_vectors.csv'
 	tot_topic_mixtures_path = resultspath + 'tot_topic_mixtures.csv'
 	tot_topic_shapes_path = resultspath + 'tot_topic_shapes.csv'

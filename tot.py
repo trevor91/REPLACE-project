@@ -14,23 +14,24 @@ class TopicsOverTime:
 		timestamps = []
 		dictionary = set()
 		stopwords = set()
-		for line in fileinput.input(stopwords_path, openhook=fileinput.hook_encoded("utf-8")):
+		for line in fileinput.input(stopwords_path):
 			stopwords.update(set(line.strip().split()))
-		for doc in fileinput.input(documents_path, openhook=fileinput.hook_encoded("utf-8")):
+		for doc in fileinput.input(documents_path):
 			words = [word for word in doc.strip().split() if word not in stopwords]
 			documents.append(words)
 			dictionary.update(set(words))
-		for timestamp in fileinput.input(timestamps_path, openhook=fileinput.hook_encoded("utf-8")):
+		for timestamp in fileinput.input(timestamps_path):
 			num_titles = int(timestamp.strip().split()[0])
 			timestamp = float(timestamp.strip().split()[1])
 			timestamps.extend([timestamp for title in range(num_titles)])
-		for line in fileinput.input(stopwords_path, openhook=fileinput.hook_encoded("utf-8")):
+		for line in fileinput.input(stopwords_path):
 			stopwords.update(set(line.strip().split()))
+		# print(stopwords)
 		first_timestamp = timestamps[0]
 		last_timestamp = timestamps[len(timestamps)-1]
 		timestamps = [1.0*(t-first_timestamp)/(last_timestamp-first_timestamp) for t in timestamps]
 		dictionary = list(dictionary)
-		assert(len(documents) == len(timestamps))
+		#assert(len(documents) == len(timestamps))
 		return(documents, timestamps, dictionary)
 
 	def CalculateCounts(self, par):
@@ -45,7 +46,7 @@ class TopicsOverTime:
 	def InitializeParameters(self, documents, timestamps, dictionary):
 		par = {}						# dictionary of all parameters
 		par['dataset'] = 'news'			# dataset name
-		par['max_iterations'] = 10		# max number of iterations in gibbs sampling
+		par['max_iterations'] = 100		# max number of iterations in gibbs sampling
 		par['T'] = 10					# number of topics
 		par['D'] = len(documents)
 		par['V'] = len(dictionary)

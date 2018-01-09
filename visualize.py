@@ -11,7 +11,7 @@ from scipy.stats import beta
 import pprint, pickle
 
 def VisualizeTopics(phi, words, num_topics, viz_threshold=9e-3):
-	# fontPath = "/usr/shar e/fonts/truetype/nanum/NanumGothic.ttf" 
+	# fontPath = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
 	fontPath = "c:/Windows/Fonts/malgun.ttf"
 	fontprop = fm.FontProperties(fname = fontPath, size = 12)
 	
@@ -59,7 +59,7 @@ def VisualizeEvolution(psi):
 	plt.show()
 
 def main():
-	resultspath = '../results/'
+	resultspath = './results/'
 	tot_pickle_path = resultspath + 'tot.pickle'
 
 	tot_pickle = open(tot_pickle_path, 'rb')
