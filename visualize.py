@@ -20,6 +20,7 @@ def VisualizeTopics(phi, words, num_topics, viz_threshold=9e-3):
 	words_viz = [words[i] for i in range(len(words_to_display)) if words_to_display[i]]
 	phi_viz = phi_viz[words_to_display]
 	fig, ax = plt.subplots()
+	print(phi_viz)
 	heatmap = plt.pcolor(phi_viz, cmap=plt.cm.Blues, alpha=0.8)
 	plt.colorbar()
 
@@ -65,7 +66,7 @@ def main():
 	tot_pickle = open(tot_pickle_path, 'rb')
 	par = pickle.load(tot_pickle)
 	VisualizeTopics(par['n'], par['word_token'], par['T'])
-	VisualizeEvolution(par['psi'])
+	# VisualizeEvolution(par['psi'])
 
 if __name__ == "__main__":
     main()
